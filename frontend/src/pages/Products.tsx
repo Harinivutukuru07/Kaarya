@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm as useHookForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,7 +19,7 @@ const productSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   sku: z.string().min(1, 'SKU is required'),
   price: z.number({ coerce: true }).min(0, 'Price must be positive'),
-  minimumStock: z.number({ coerce: true }).min(0).default(0),
+  minimumStock: z.number({ coerce: true }).min(0),
 });
 type ProductForm = z.infer<typeof productSchema>;
 
@@ -109,7 +109,7 @@ const Products = () => {
                         {p.stock}
                       </span>
                       {p.stock <= p.minimumStock && (
-                        <AlertTriangle size={14} color="var(--color-warning)" title="Low Stock" />
+                        <span title="Low Stock"><AlertTriangle size={14} color="var(--color-warning)" /></span>
                       )}
                     </div>
                   </td>
