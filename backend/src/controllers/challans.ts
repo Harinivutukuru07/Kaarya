@@ -60,7 +60,7 @@ export const getChallans = async (req: Request, res: Response) => {
 export const getChallanById = async (req: Request, res: Response) => {
   try {
     const challan = await prisma.challan.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       include: {
         customer: true,
         items: true,
@@ -121,7 +121,7 @@ export const createChallan = async (req: Request, res: Response) => {
     res.status(201).json({ success: true, data: challan });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.errors });
+      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.issues });
     }
     console.error(error);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -131,7 +131,7 @@ export const createChallan = async (req: Request, res: Response) => {
 export const cancelChallan = async (req: Request, res: Response) => {
   try {
     const challan = await prisma.challan.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
     });
 
     if (!challan) {
@@ -143,7 +143,7 @@ export const cancelChallan = async (req: Request, res: Response) => {
     }
 
     const updated = await prisma.challan.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: { status: 'CANCELLED' },
     });
 
@@ -156,7 +156,7 @@ export const cancelChallan = async (req: Request, res: Response) => {
 
 export const confirmChallan = async (req: AuthRequest, res: Response) => {
   try {
-    const challanId = req.params.id;
+    const challanId = req.params.id as string;
     const userId = req.user!.id;
 
     const result = await prisma.$transaction(async (tx) => {
@@ -218,7 +218,7 @@ export const confirmChallan = async (req: AuthRequest, res: Response) => {
 
       // Update status
       return await tx.challan.update({
-        where: { id: challanId },
+        where: { id: challanId as string },
         data: { status: 'CONFIRMED' },
         include: { items: true },
       });

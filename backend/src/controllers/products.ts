@@ -56,7 +56,7 @@ export const getProducts = async (req: Request, res: Response) => {
 export const getProductById = async (req: Request, res: Response) => {
   try {
     const product = await prisma.product.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
     });
 
     if (!product) {
@@ -84,7 +84,7 @@ export const createProduct = async (req: Request, res: Response) => {
     res.status(201).json({ success: true, data: product });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.errors });
+      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.issues });
     }
     console.error(error);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -97,19 +97,19 @@ export const updateProduct = async (req: Request, res: Response) => {
     
     if (data.sku) {
       const existing = await prisma.product.findUnique({ where: { sku: data.sku } });
-      if (existing && existing.id !== req.params.id) {
+      if (existing && existing.id !== (req.params.id as string)) {
         return res.status(409).json({ success: false, message: 'SKU already in use by another product' });
       }
     }
 
     const product = await prisma.product.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data,
     });
     res.json({ success: true, data: product });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.errors });
+      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.issues });
     }
     console.error(error);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -119,7 +119,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
     await prisma.product.delete({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
     });
     res.json({ success: true, message: 'Product deleted' });
   } catch (error) {

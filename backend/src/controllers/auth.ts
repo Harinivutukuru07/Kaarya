@@ -34,7 +34,7 @@ export const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { id: user.id, role: user.role },
       JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions
     );
 
     res.json({
@@ -49,7 +49,7 @@ export const login = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.errors });
+      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.issues });
     }
     console.error(error);
     res.status(500).json({ success: false, message: 'Internal server error' });

@@ -60,7 +60,7 @@ export const getCustomers = async (req: Request, res: Response) => {
 export const getCustomerById = async (req: Request, res: Response) => {
   try {
     const customer = await prisma.customer.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       include: {
         customerFollowUps: {
           orderBy: { date: 'desc' },
@@ -86,7 +86,7 @@ export const createCustomer = async (req: Request, res: Response) => {
     res.status(201).json({ success: true, data: customer });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.errors });
+      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.issues });
     }
     console.error(error);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -97,13 +97,13 @@ export const updateCustomer = async (req: Request, res: Response) => {
   try {
     const data = customerSchema.partial().parse(req.body);
     const customer = await prisma.customer.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data,
     });
     res.json({ success: true, data: customer });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.errors });
+      return res.status(400).json({ success: false, message: 'Invalid input', errors: error.issues });
     }
     // Handle Prisma not found error if needed
     console.error(error);
@@ -114,7 +114,7 @@ export const updateCustomer = async (req: Request, res: Response) => {
 export const deleteCustomer = async (req: Request, res: Response) => {
   try {
     await prisma.customer.delete({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
     });
     res.json({ success: true, message: 'Customer deleted' });
   } catch (error) {
