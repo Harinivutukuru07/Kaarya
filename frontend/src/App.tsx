@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './hooks/useAuth';
 import DashboardLayout from './layouts/DashboardLayout';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 
 import Customers from './pages/Customers';
@@ -19,6 +20,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/" element={<DashboardLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="customers" element={<Customers />} />

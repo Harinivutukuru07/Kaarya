@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm as useHookForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import api from '../services/api';
 
@@ -74,6 +74,11 @@ const Login = () => {
             {isSubmitting ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
+
+        <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
+          Don't have an account?{' '}
+          <Link to="/register" style={{ color: 'var(--color-brand-main)', fontWeight: 500 }}>Create one</Link>
+        </p>
       </div>
     </div>
   );
